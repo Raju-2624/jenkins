@@ -1,0 +1,26 @@
+Required servers
+ 1.Jenkins
+ 2.Nexus
+ 
+Required Plugins
+ 1.GIT
+ 2.Maven
+ 3.Nexus Artifact Uploader
+ 
+Change the nexus url and credentials as per your requirements
+
+
+##Nexus Data-Fill
+
+Nexus Version: NEXUS2
+Protocol: HTTP
+Nexus URL: <url of nexus>
+Credentials: <Nexus credentials>
+Group Id: <Any group ID>
+Version: $BUILD_ID
+Repository: <name of repository which is created in nexus> 
+
+Select Artifacts
+Artifactid: $BUILD_TIMESTAMP
+Type: war
+File: <path of the war file>  - example: /var/lib/jenkins/workspace/<JOB_NAME>/webapp/target/webapp.war
