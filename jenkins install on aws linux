@@ -8,3 +8,4 @@ sudo yum install jenkins -y
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
 sudo systemctl status jenkins
+if you want donloud jenkins goto jenkins.io ->goto downloud-> then insatll the jenkins
