@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'mvn'
+    }
+
+    stages {
+        stage('Git_clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/iamkishore0/maven_project.git'
+            }
+        }
+
+        stage('Build_with_Maven') {
+            steps {
+                sh 'mvn install'
+            }
+        }
+
+        stage('sonar_code_analysis') {
+            environment {
+                scannerHome = tool 'sonarqube'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.login=57bca5c03f220d0ad4df6925468cbb2f3928a0c2 \
+                    -Dsonar.host.url=https://sonarcloud.io \
+                    -Dsonar.organization=raj1234 \
+                    -Dsonar.projectKey=raj1234 \
+                    -Dsonar.java.binaries=./"
+                }
+            }
+        }
+
+        stage('Nexus_Artifact_uploader') {
+            steps {
+                nexusArtifactUploader(
+                    artifacts: [[
+                        artifactId: "${env.BUILD_ID}", 
+                        classifier: '', 
+                        file: '/var/lib/jenkins/workspace/realproject/webapp/target/webapp.war', 
+                        type: 'war'
+                    ]],
+                    credentialsId: 'nexus', 
+                    groupId: 'mygroup', 
+                    nexusUrl: 'http://65.1.111.239:8081/nexus', 
+                    nexusVersion: 'nexus2', 
+                    protocol: 'http', 
+                    repository: 'myapp', 
+                    version: "${env.BUILD_ID}"
+                )
+            }
+        }
+    }
+}
